@@ -1,0 +1,14 @@
+{
+    "xcodeproj":{
+        "appName":"MyTestApplication",
+        "uiTestsName":"MyTestApplicationUITests",
+        "appReverseDomain":"com.domain",
+        "version":"7.2.1"
+    },
+    "directories":{
+        "base":"base",
+        "exitingTests":"base/UITests",
+        "working":"baseworkingdir",
+        "destination":"finished"
+    }
+}
