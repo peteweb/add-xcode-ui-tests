@@ -117,7 +117,9 @@ if(configIsOK(cfg)){
 
                     var pbxTD = 'PBXTargetDependency';
                     var pbxCntItmPrxy = 'PBXContainerItemProxy';
+                    var pbxNatTar = 'PBXNativeTarget';
 
+                    // create a PBXTargetDependency object
                     proj.hash.project.objects[pbxTD] = {};
                     proj.hash.project.objects[pbxTD][reused.uuids.PBXTargetDependency] = {
                         isa: pbxTD,
@@ -125,6 +127,37 @@ if(configIsOK(cfg)){
                         targetProxy: reused.uuids.PBXContainerItemProxy + ' /* ' + pbxCntItmPrxy + '*/'
                     };
                     proj.hash.project.objects[pbxTD][reused.uuids.PBXTargetDependency + '_comment'] = pbxTD;
+                    // create a PBXContainerItemProxy object
+                    proj.hash.project.objects[pbxCntItmPrxy] = {};
+                    proj.hash.project.objects[pbxCntItmPrxy][reused.uuids.PBXContainerItemProxy] = {
+                        isa: pbxCntItmPrxy,
+                        containerPortal: proj.hash.project['rootObject'] + ' /* Project object */',
+                        proxyType: '1',
+                        remoteGlobalIDString: reused.appTarget.value,
+                        remoteInfo: app
+                    };
+                    proj.hash.project.objects[pbxCntItmPrxy][reused.uuids.PBXContainerItemProxy + '_comment'] = pbxCntItmPrxy;
+                    // add to the existing PBXNativeTarget object
+                    proj.addToPbxNativeTargetSection({
+                        uuid: reused.uuids.core,
+                        pbxNativeTarget: {
+                            isa: pbxNatTar,
+                            buildConfigurationList: reused.uuids.buildConfigurationList + ' /* Build configuration list for ' + pbxNatTar + ' "' + testsName + '" */',
+                            buildPhases:[
+                                reused.uuids.sources + ' /* Sources */',
+                                reused.uuids.frameworks + ' /* Frameworks */',
+                                reused.uuids.resources + ' /* Resources */'
+                            ],
+                            buildRules:[],
+                            dependencies:[
+                                reused.uuids.PBXTargetDependency + ' /* ' + pbxTD + ' */'
+                            ],
+                            name: testsName,
+                            productName: testsName,
+                            productReference: ' /* ' +  + '*/',
+                            productType: '"com.apple.product-type.bundle.ui-testing"'
+                        }
+                    });
 
 
                 } else {
