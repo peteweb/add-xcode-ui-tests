@@ -128,6 +128,9 @@ if(configIsOK(cfg)){
                     var pbxCntItmPrxy = 'PBXContainerItemProxy';
                     var pbxNatTar = 'PBXNativeTarget';
                     var xcBldCfg = 'XCBuildConfiguration';
+                    var xcCfgLst = 'XCConfigurationList';
+                    var pbxSrcBldPhse = 'PBXSourcesBuildPhase';
+                    var pbxFleRef = 'PBXFileReference';
 
                     // create a PBXTargetDependency object
                     proj.hash.project.objects[pbxTD] = {};
@@ -184,11 +187,55 @@ if(configIsOK(cfg)){
                         buildSettings: createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
                         name: 'Debug'
                     };
-                    proj.pbxXCBuildConfigurationSection()[reused.uuids.debug + ' /* Release */'] = {
+                    proj.pbxXCBuildConfigurationSection()[reused.uuids.release + ' /* Release */'] = {
                         isa: xcBldCfg,
                         buildSettings: createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
                         name: 'Release'
                     };
+                    // now get it inside the XCConfigurationList
+                    proj.pbxXCConfigurationList()[reused.uuids.buildConfigurationList + ' /* Build configuration list for ' + pbxNatTar + ' "' + testsName + '"*/'] = {
+                        isa: xcCfgLst,
+                        buildConfigurations:[
+                            reused.uuids.debug + ' /* Debug */',
+                            reused.uuids.release + ' /* Release */'
+                        ],
+                        defaultConfigurationIsVisible: '0'
+                    };
+                    // things get tricky again - time for some more helpers
+                    var bldActnMsk = proj.hash.project.objects[pbxSrcBldPhse][proj.pbxTargetByName(app).buildPhases[0].value].buildActionMask;
+                    var swiftSources = [];
+                    var pbxChildFiles = [];
+
+                    for (var i = 0; i < swiftFiles.length; i++) {
+
+                        var bldPhse = reused.sourceFiles[swiftFiles[i]]].uuids.PBXSourcesBuildPhase;
+                        var fleRf = reused.sourceFiles[swiftFiles[i]]].uuids.PBXFileReference;
+                        var nm = reused.sourceFiles[swiftFiles[i]]].name;
+
+                        proj.pbxBuildFileSection()[bldPhse + ' /* ' + nm + ' in Sources */'] = createBuildFileObj({
+                            fileRef: fleRf,
+                            basename: nm
+                        });
+
+                        swiftSources.push({
+                            value: bldPhse,
+                            comment: nm + ' in Sources'
+                        });
+
+                        pbxChildFiles.push({
+                            value: fleRf,
+                            comment: nm
+                        });
+                        // this next bit, relies on a flat folder structure for the test files directory - which we should have at this point
+                        proj.pbxFileReferenceSection()[fleRf + ' /* ' + nm + ' */'] = {
+                            isa: pbxFleRef,
+                            lastKnownFileType 'sourcecode.swift',
+                            path: nm,
+                            sourceTree: '"<group>"'
+                        };
+
+                    }
+
 
 
                 } else {
