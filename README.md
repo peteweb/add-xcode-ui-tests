@@ -14,7 +14,7 @@ Well - now we can.
 
 * Adding in .swift iOS tests to dynamically created XCode projects
 * Promoting the awesome benefits of UI Testing
-* Making life easier
+* Making developers and testers lives easier
 
 ### How do I get set up? ###
 
