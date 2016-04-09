@@ -2,12 +2,12 @@
     "xcodeproj":{
         "appName":"MyTestApplication",
         "uiTestsName":"MyTestApplicationUITests",
-        "appReverseDomain":"com.domain",
+        "appReverseDomain":"com.testdomain",
         "version":"7.2.1"
     },
     "directories":{
         "base":"base",
-        "exitingTests":"base/UITests",
+        "exitingTests":"basetests",
         "working":"baseworkingdir",
         "destination":"finished"
     }

@@ -25,6 +25,15 @@ function createBuildFileObj(obj){
     };
 }
 
+function createBuildPhaseObj(isaType, actionMask, filesArray){
+    return {
+        isa: isaType,
+        buildActionMask: actionMask,
+        files: filesArray,
+        runOnlyForDeploymentPostprocessing: '0'
+    };
+}
+
 function createBuildSettingsObj(targetName, reverseDomain, appName){
     return {
         INFOPLIST_FILE: targetName + '/Info.plist',
@@ -122,16 +131,17 @@ if(configIsOK(cfg)){
                         };
                     }
                     // Our object should be looking dope now yo.
-
                     var pbxTD = 'PBXTargetDependency';
                     var pbxCntItmPrxy = 'PBXContainerItemProxy';
                     var pbxNatTar = 'PBXNativeTarget';
                     var xcBldCfg = 'XCBuildConfiguration';
                     var xcCfgLst = 'XCConfigurationList';
                     var pbxSrcBldPhse = 'PBXSourcesBuildPhase';
+                    var pbxFrmwksBldPhse = 'PBXFrameworksBuildPhase';
+                    var pbxRsBldPhse = 'PBXResourcesBuildPhase';
                     var pbxFleRef = 'PBXFileReference';
-
-                    // create a PBXTargetDependency object
+                    var pbxGrp = 'PBXGroup';
+                    // Create a PBXTargetDependency object
                     proj.hash.project.objects[pbxTD] = {};
                     proj.hash.project.objects[pbxTD][reused.uuids.PBXTargetDependency] = {
                         isa: pbxTD,
@@ -139,7 +149,7 @@ if(configIsOK(cfg)){
                         targetProxy: reused.uuids.PBXContainerItemProxy + ' /* ' + pbxCntItmPrxy + '*/'
                     };
                     proj.hash.project.objects[pbxTD][reused.uuids.PBXTargetDependency + '_comment'] = pbxTD;
-                    // create a PBXContainerItemProxy object
+                    // Create a PBXContainerItemProxy object
                     proj.hash.project.objects[pbxCntItmPrxy] = {};
                     proj.hash.project.objects[pbxCntItmPrxy][reused.uuids.PBXContainerItemProxy] = {
                         isa: pbxCntItmPrxy,
@@ -149,7 +159,7 @@ if(configIsOK(cfg)){
                         remoteInfo: app
                     };
                     proj.hash.project.objects[pbxCntItmPrxy][reused.uuids.PBXContainerItemProxy + '_comment'] = pbxCntItmPrxy;
-                    // add to the existing PBXNativeTarget object
+                    // Add to the existing PBXNativeTarget object
                     proj.addToPbxNativeTargetSection({
                         uuid: reused.uuids.core,
                         pbxNativeTarget: {
@@ -166,21 +176,21 @@ if(configIsOK(cfg)){
                             ],
                             name: testsName,
                             productName: testsName,
-                            productReference: ' /* ' +  + '*/',
+                            productReference: reused.XCTest.uuid + ' /* ' + reused.XCTest.name + '*/',
                             productType: '"com.apple.product-type.bundle.ui-testing"'
                         }
                     });
-                    // make the PBXNativeTarget recognisable to the rest of the project
+                    // Make the PBXNativeTarget recognisable to the rest of the project
                     proj.pbxProjectSection()[proj.getFirstProject()['uuid']]['targets'].push({
                         value: reused.uuids.core,
                         comment: testsName
                     });
-                    // add it as a test target inside TargetAttributes
+                    // Add it as a test target inside TargetAttributes
                     proj.pbxProjectSection()[proj.getFirstProject()['uuid']]['attributes']['TargetAttributes'][reused.uuids.core] = {
                         CreatedOnToolsVersion: cfg.xcodeproj.version,
                         TestTargetID: reused.appTarget.value
                     };
-                    // add it to the XCBuildConfiguration object (Debug then Release)
+                    // Add it to the XCBuildConfiguration object (Debug then Release)
                     proj.pbxXCBuildConfigurationSection()[reused.uuids.debug + ' /* Debug */'] = {
                         isa: xcBldCfg,
                         buildSettings: createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
@@ -191,7 +201,7 @@ if(configIsOK(cfg)){
                         buildSettings: createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
                         name: 'Release'
                     };
-                    // now get it inside the XCConfigurationList
+                    // Now get it inside the XCConfigurationList
                     proj.pbxXCConfigurationList()[reused.uuids.buildConfigurationList + ' /* Build configuration list for ' + pbxNatTar + ' "' + testsName + '"*/'] = {
                         isa: xcCfgLst,
                         buildConfigurations:[
@@ -200,7 +210,7 @@ if(configIsOK(cfg)){
                         ],
                         defaultConfigurationIsVisible: '0'
                     };
-                    // things get tricky again - time for some more helpers
+                    // Things get tricky again - time for some more helpers
                     var bldActnMsk = proj.hash.project.objects[pbxSrcBldPhse][proj.pbxTargetByName(app).buildPhases[0].value].buildActionMask;
                     var swiftSources = [];
                     var pbxChildFiles = [];
@@ -225,7 +235,7 @@ if(configIsOK(cfg)){
                             value: fleRf,
                             comment: nm
                         });
-                        // this next bit, relies on a flat folder structure for the test files directory - which we should have at this point
+                        // This next bit, relies on a flat folder structure for the test files directory - which we should have at this point
                         proj.pbxFileReferenceSection()[fleRf + ' /* ' + nm + ' */'] = {
                             isa: pbxFleRef,
                             lastKnownFileType: 'sourcecode.swift',
@@ -234,9 +244,56 @@ if(configIsOK(cfg)){
                         };
 
                     }
-
-
-
+                    // Now it's time to add in our sources (the .swift files)
+                    proj.hash.project.objects[pbxSrcBldPhse][reused.uuids.sources] = createBuildPhaseObj(pbxSrcBldPhse, bldActnMsk, swiftSources);
+                    proj.hash.project.objects[pbxSrcBldPhse][reused.uuids.sources + '_comment'] = 'Sources';
+                    // For now - our frameworks and resources equivalents are empty.
+                    // But - because they might not be later - we'll create points to add them in too so we can use them later if we want to.
+                    // Frameworks first...
+                    proj.hash.project.objects[pbxFrmwksBldPhse][reused.uuids.frameworks] = createBuildPhaseObj(pbxFrmwksBldPhse, bldActnMsk, []);
+                    proj.hash.project.objects[pbxFrmwksBldPhse][reused.uuids.frameworks + '_comment'] = 'Frameworks';
+                    // ...then Resources.
+                    proj.hash.project.objects[pbxRsBldPhse][reused.uuids.resources] = createBuildPhaseObj(pbxRsBldPhse, bldActnMsk, []);
+                    proj.hash.project.objects[pbxRsBldPhse][reused.uuids.resources + '_comment'] = 'Resources';
+                    // Now it's time to create the XCTest reference
+                    proj.pbxFileReferenceSection()[reused.XCTest.uuid + ' /* ' + reused.XCTest.name + ' */'] = {
+                        isa: pbxFleRef,
+                        explicitFileType: 'wrapper.cfbundle',
+                        includeInIndex: '0',
+                        path: reused.XCTest.name,
+                        sourceTree: 'BUILT_PRODUCTS_DIR'
+                    };
+                    // And now the Info.plist file
+                    proj.pbxFileReferenceSection()[reused.coreInfo.uuid + ' /* ' + reused.coreInfo.name + ' */'] = {
+                        isa: pbxFleRef,
+                        lastKnownFileType: 'text.plist.xml',
+                        path: reused.coreInfo.name,
+                        sourceTree: '"<group>"'
+                    };
+                    // Now let's push our XCTest file into the Products group
+                    proj.pbxGroupByName('Products').children.push({
+                        value: reused.XCTest.uuid,
+                        comment: reused.XCTest.name
+                    });
+                    // And push our Info.plist file into our pbxChildFiles array.
+                    pbxChildFiles.push({
+                        value: reused.coreInfo.uuid,
+                        comment: reused.coreInfo.name
+                    });
+                    // NOW we can create our PBXGroup, which binds everything together. Been a long road getting here eh!
+                    proj.hash.project.objects[pbxGrp][getMainPBXGroupUUID(proj)].children.push({
+                        value: reused.uuids.PBXGroup,
+                        comment: testsName
+                    });
+                    proj.hash.project.objects[pbxGrp][reused.uuids.PBXGroup] = {
+                        isa: pbxGrp,
+                        children: pbxChildFiles,
+                        path: testsName,
+                        sourceTree: '"<group>"'
+                    };
+                    proj.hash.project.objects[pbxGrp][reused.uuids.PBXGroup + '_comment'] = testsName;
+                    // We're done! So let's write all of this back to our working file.
+                    fs.writeFileSync(pbxprojPath, proj.writeSync());
                 } else {
                     console.error('Could not parse that project file!');
                 }
