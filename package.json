@@ -1,13 +1,23 @@
 {
-  "author": "Pete Lancaster <petedoeswebthings@gmail.com>",
-  "name": "xcodeproject",
-  "description": "example app to test parsing and writing of xcodeproj/project.pbxproj files",
-  "version": "0.0.1",
-  "main": "app.js",
-  "engines": {
-    "node": ">=0.6.7"
-  },
-  "dependencies": {
-    "fs":"latest"
-  }
+    "author": "Pete Lancaster <petedoeswebthings@gmail.com>",
+    "name": "add-xcode-ui-tests",
+    "description": "Dynamic adding of swift UI Tests to existing, or dynamically created, XCode projects",
+    "version": "0.1",
+    "main": "app.js",
+    "contributors": [
+        {
+            "name": "Pete Lancaster",
+            "email": "petedoeswebthings@gmail.com"
+        },
+        {
+            "name": "Gary George",
+            "email": "info@georgewebdesign.co.uk"
+        }
+    ],
+    "engines": {
+        "node": ">=4.2.0"
+    },
+    "dependencies": {
+        "fs": "latest"
+    }
 }
