@@ -294,14 +294,21 @@ if(configIsOK(cfg)){
                     proj.hash.project.objects[pbxGrp][reused.uuids.PBXGroup + '_comment'] = testsName;
                     // We're done! So let's write all of this back to our working file.
                     fs.writeFileSync(pbxprojPath, proj.writeSync());
+                    // And move it all into our final destination folder.
+                    op1 = "rm -rf " + cfg.directories.destination + ";";
+                    op2 = "cp -a " + cfg.directories.working + "/* " + cfg.directories.destination + ";";
+                    cp.exec(op1 + op2, function(error, stdout, stderr){
+                        if(error){
+                            console.error('Dammit! Fell at the last hurdle. Can this script write to the destination directory: ' + cfg.directories.destination + ' ?');
+                            console.error(stderr);
+                        } else {
+                            console.log("We're all done - and you can find the output of this operation at: " + cfg.directories.destination + ". Happy testing!");
+                        }
+                    });
                 } else {
-                    console.error('Could not parse that project file!');
+                    console.error('Could not parse that project file! Can you open it manually in the XCode: ' + cfg.xcodeproj.version + ' (version specified)?');
                 }
             });
-
-            console.log(testFiles);
-
-            console.log('all good!');
         } else {
             console.error('Could not execute required commands!');
             console.log(stdout);
