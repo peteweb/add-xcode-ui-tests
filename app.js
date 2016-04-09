@@ -297,7 +297,8 @@ if(configIsOK(cfg)){
                     // And move it all into our final destination folder.
                     op1 = "rm -rf " + cfg.directories.destination + ";";
                     op2 = "cp -a " + cfg.directories.working + "/* " + cfg.directories.destination + ";";
-                    cp.exec(op1 + op2, function(error, stdout, stderr){
+                    op3 = "rm -rf " + cfg.directories.working + ";";
+                    cp.exec(op1 + op2 + op3, function(error, stdout, stderr){
                         if(error){
                             console.error('Dammit! Fell at the last hurdle. Can this script write to the destination directory: ' + cfg.directories.destination + ' ?');
                             console.error(stderr);
