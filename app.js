@@ -54,9 +54,9 @@ if(configIsOK(cfg)){
     var app = cfg.xcodeproj.appName;
     var testsName = cfg.xcodeproj.uiTestsName;
     var base = cfg.directories.base;
-    var basedir = cfg.directories.base + '/' + app;
+    var basedir = base + '/' + app;
     var basewrkdir = cfg.directories.working + '/' + app;
-    var basewrktestdir = basedir + "/" + testsName;
+    var basewrktestdir = basewrkdir + "/" + testsName;
 
     var ex1 = "rm -rf " + cfg.directories.working + ";";
     var ex2 = "mkdir " + cfg.directories.working + ";";
