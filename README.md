@@ -30,9 +30,11 @@ Well - now we can.
 * [Pete Lancaster](http://petedoeswebthings.com/)
 * [Gary George](http://georgewebdesign.co.uk/)
 
-### Who do I talk to? ###
+### Who do I talk to if I have questions? ###
 
 * [Pete](http://twitter.com/peteweb) on Twitter
+
+Note: I sleep a lot - so it may take me awhile to get back to you.
 
 ### EPIC DISCLAIMER ###
 
