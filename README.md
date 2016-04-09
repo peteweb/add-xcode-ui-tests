@@ -1,6 +1,6 @@
 # Add XCode UI Tests to an existing or dynamic XCode project #
 
-If you use NativeScript, Appcelerator Titanium or any other 'cross compile' platform solution, you'll already know that some things are fantastically easy for you to do (such as write one set of logic for multiple platforms), but others (such as writing reliable automated tests) can be a minefield.
+If you use NativeScript, Appcelerator Titanium or any other 'cross compile' platform solution, you'll already know that some things are fantastically easy for you to do (such as writing one set of logic for multiple platforms), but others (such as writing reliable automated tests) can be a minefield.
 
 In most cases for iOS development with these solutions, XCode projects are built 'on the fly', meaning at your project file today won't be the same as your project file tomorrow.
 
