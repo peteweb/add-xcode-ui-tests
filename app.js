@@ -25,6 +25,17 @@ function createBuildFileObj(obj){
     };
 }
 
+function createBuildSettingsObj(targetName, reverseDomain, appName){
+    return {
+        INFOPLIST_FILE: targetName + '/Info.plist',
+        LD_RUNPATH_SEARCH_PATHS: '"$(inherited) @executable_path/Frameworks @loader_path/Frameworks"',
+        PRODUCT_BUNDLE_IDENTIFIER: reverseDomain + '.' + targetName,
+        PRODUCT_NAME: '"$(TARGET_NAME)"',
+        TEST_TARGET_NAME: appName,
+        USES_XCTRUNNER: 'YES'
+    }
+}
+
 function getMainPBXGroupUUID(xcproj){
     return Object.keys(xcproj.hash.project.objects['PBXGroup'])[0];
 }
@@ -75,8 +86,7 @@ if(configIsOK(cfg)){
             proj.parse(function(err){
                 if(!err){
                     // Here's where it gets tricky, as things are referenced all over the shop.
-                    // So we're going to keep track of it all in helper objects.
-
+                    // So we're going to keep track of it all in a helper object.
                     var reused = {
                             uuids: {
                                 core: proj.generateUuid(),
@@ -113,11 +123,11 @@ if(configIsOK(cfg)){
                     }
                     // Our object should be looking dope now yo.
 
-                    console.log(reused);
 
                     var pbxTD = 'PBXTargetDependency';
                     var pbxCntItmPrxy = 'PBXContainerItemProxy';
                     var pbxNatTar = 'PBXNativeTarget';
+                    var xcBldCfg = 'XCBuildConfiguration';
 
                     // create a PBXTargetDependency object
                     proj.hash.project.objects[pbxTD] = {};
@@ -158,6 +168,27 @@ if(configIsOK(cfg)){
                             productType: '"com.apple.product-type.bundle.ui-testing"'
                         }
                     });
+                    // make the PBXNativeTarget recognisable to the rest of the project
+                    proj.pbxProjectSection()[proj.getFirstProject()['uuid']]['targets'].push({
+                        value: reused.uuids.core,
+                        comment: testsName
+                    });
+                    // add it as a test target inside TargetAttributes
+                    proj.pbxProjectSection()[proj.getFirstProject()['uuid']]['attributes']['TargetAttributes'][reused.uuids.core] = {
+                        CreatedOnToolsVersion: cfg.xcodeproj.version,
+                        TestTargetID: reused.appTarget.value
+                    };
+                    // add it to the XCBuildConfiguration object (Debug then Release)
+                    proj.pbxXCBuildConfigurationSection()[reused.uuids.debug + ' /* Debug */'] = {
+                        isa: xcBldCfg,
+                        buildSettings: createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
+                        name: 'Debug'
+                    };
+                    proj.pbxXCBuildConfigurationSection()[reused.uuids.debug + ' /* Release */'] = {
+                        isa: xcBldCfg,
+                        buildSettings: createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
+                        name: 'Release'
+                    };
 
 
                 } else {
