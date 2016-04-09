@@ -4,9 +4,9 @@ If you use NativeScript, Appcelerator Titanium or any other 'cross compile' plat
 
 In most cases for iOS development with these solutions, XCode projects are built 'on the fly', meaning at your project file today won't be the same as your project file tomorrow.
 
-This can make things like adding in UI Tests in swift, a complete nightmare.
+This can make things like adding in native iOS UI Tests, a complete nightmare.
 
-So what we really need, is a way to make this better. What if we could parse our XCode project after compile, and add in some tests that we maintain in a separate repo?
+So what we really need, is a way to make this better. What if we could parse our XCode project after compile, and add in some swift tests that we maintained elsewhere?
 
 Well - now we can.
 
@@ -19,6 +19,7 @@ Well - now we can.
 ### How do I get set up? ###
 
 * Write some .swift UI Tests for your existing project ([here's a bit of an intro](https://developer.apple.com/videos/play/wwdc2015/406/))
+* Extract these tests out into a separate file folder / location (see the basetests folder for an example)
 * Change the values of the config.json file to directories that are readable/writable (all of which are required and must be absolute or relative to the location you execute the next command)
 * Run `node app.js`
 * Open up the finished XCode project inside your chosen destination directory
@@ -31,7 +32,7 @@ Well - now we can.
 
 ### Who do I talk to? ###
 
-* @peteweb on Twitter
+* [Pete](http://twitter.com/peteweb) on Twitter
 
 ### EPIC DISCLAIMER ###
 
