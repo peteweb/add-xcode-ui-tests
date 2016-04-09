@@ -34,7 +34,7 @@ Well - now we can.
 
 * [Pete](http://twitter.com/peteweb) on Twitter
 
-Note: I sleep a lot - so it may take me awhile to get back to you.
+*Note: I sleep a lot - so it may take me awhile to get back to you - apologies in advance.*
 
 ### EPIC DISCLAIMER ###
 
