@@ -123,7 +123,6 @@ if(configIsOK(cfg)){
                     }
                     // Our object should be looking dope now yo.
 
-
                     var pbxTD = 'PBXTargetDependency';
                     var pbxCntItmPrxy = 'PBXContainerItemProxy';
                     var pbxNatTar = 'PBXNativeTarget';
@@ -208,9 +207,9 @@ if(configIsOK(cfg)){
 
                     for (var i = 0; i < swiftFiles.length; i++) {
 
-                        var bldPhse = reused.sourceFiles[swiftFiles[i]]].uuids.PBXSourcesBuildPhase;
-                        var fleRf = reused.sourceFiles[swiftFiles[i]]].uuids.PBXFileReference;
-                        var nm = reused.sourceFiles[swiftFiles[i]]].name;
+                        var bldPhse = reused.sourceFiles[swiftFiles[i]].uuids.PBXSourcesBuildPhase;
+                        var fleRf = reused.sourceFiles[swiftFiles[i]].uuids.PBXFileReference;
+                        var nm = reused.sourceFiles[swiftFiles[i]].name;
 
                         proj.pbxBuildFileSection()[bldPhse + ' /* ' + nm + ' in Sources */'] = createBuildFileObj({
                             fileRef: fleRf,
@@ -229,7 +228,7 @@ if(configIsOK(cfg)){
                         // this next bit, relies on a flat folder structure for the test files directory - which we should have at this point
                         proj.pbxFileReferenceSection()[fleRf + ' /* ' + nm + ' */'] = {
                             isa: pbxFleRef,
-                            lastKnownFileType 'sourcecode.swift',
+                            lastKnownFileType: 'sourcecode.swift',
                             path: nm,
                             sourceTree: '"<group>"'
                         };
