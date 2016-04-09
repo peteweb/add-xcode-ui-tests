@@ -18,9 +18,10 @@ Well - now we can.
 
 ### How do I get set up? ###
 
-* Change the values of the config.json file (all of which are required)
+* Write some .swift UI Tests for your existing project ([here's a bit of an intro](https://developer.apple.com/videos/play/wwdc2015/406/))
+* Change the values of the config.json file to directories that are readable/writable (all of which are required and must be absolute or relative to the location you execute the next command)
 * Run `node app.js`
-* Open up the finished XCode project inside your destination directory
+* Open up the finished XCode project inside your chosen destination directory
 * Test all the things
 
 ### Contributors ###
