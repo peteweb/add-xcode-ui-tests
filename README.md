@@ -1,4 +1,4 @@
-# Add XCode UI Tests to an existing or dynamic XCode project #
+# Add UI Tests to an existing or dynamic XCode project via Node.js #
 
 If you use NativeScript, Appcelerator Titanium or any other 'cross compile' platform solution, you'll already know that some things are fantastically easy for you to do (such as writing one set of logic for multiple platforms), but others (such as writing reliable automated tests) can be a minefield.
 
