@@ -2,7 +2,7 @@
     "author": "Pete Lancaster <petedoeswebthings@gmail.com>",
     "name": "add-xcode-ui-tests",
     "description": "Dynamic adding of swift UI Tests to existing, or dynamically created, XCode projects",
-    "version": "0.1",
+    "version": "0.2.0",
     "main": "app.js",
     "contributors": [
         {
@@ -18,6 +18,15 @@
         "node": ">=4.2.0"
     },
     "dependencies": {
-        "fs": "latest"
+        "fs": "0.0.2",
+        "xcode": "0.8.4"
+    },
+    "devDependencies": {
+        "jasmine-node": "1.14.5",
+        "istanbul": "0.4.3",
+        "proxyquire": "1.7.4"
+    },
+    "scripts":{
+        "unit": "jasmine-node tests/unit/"
     }
 }

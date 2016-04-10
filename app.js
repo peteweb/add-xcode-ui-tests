@@ -2,6 +2,7 @@ var cp = require('child_process'),
     fs = require('fs'),
     xcode = require('xcode');
 var cfg = require('./config.json');
+var objCreator = require('./libs/objectCreator.js');
 
 function isGood(value){
     if(value === undefined || value === null || value === ""){
