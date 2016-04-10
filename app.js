@@ -18,34 +18,6 @@ function configIsOK(obj){
     return true;
 }
 
-function createBuildFileObj(obj){
-    return {
-        isa: 'PBXBuildFile',
-        fileRef: obj.fileRef,
-        fileRef_comment: obj.basename
-    };
-}
-
-function createBuildPhaseObj(isaType, actionMask, filesArray){
-    return {
-        isa: isaType,
-        buildActionMask: actionMask,
-        files: filesArray,
-        runOnlyForDeploymentPostprocessing: '0'
-    };
-}
-
-function createBuildSettingsObj(targetName, reverseDomain, appName){
-    return {
-        INFOPLIST_FILE: targetName + '/Info.plist',
-        LD_RUNPATH_SEARCH_PATHS: '"$(inherited) @executable_path/Frameworks @loader_path/Frameworks"',
-        PRODUCT_BUNDLE_IDENTIFIER: reverseDomain + '.' + targetName,
-        PRODUCT_NAME: '"$(TARGET_NAME)"',
-        TEST_TARGET_NAME: appName,
-        USES_XCTRUNNER: 'YES'
-    }
-}
-
 function getMainPBXGroupUUID(xcproj){
     return Object.keys(xcproj.hash.project.objects['PBXGroup'])[0];
 }
@@ -194,12 +166,12 @@ if(configIsOK(cfg)){
                     // Add it to the XCBuildConfiguration object (Debug then Release)
                     proj.pbxXCBuildConfigurationSection()[reused.uuids.debug + ' /* Debug */'] = {
                         isa: xcBldCfg,
-                        buildSettings: createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
+                        buildSettings: objCreator.createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
                         name: 'Debug'
                     };
                     proj.pbxXCBuildConfigurationSection()[reused.uuids.release + ' /* Release */'] = {
                         isa: xcBldCfg,
-                        buildSettings: createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
+                        buildSettings: objCreator.createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
                         name: 'Release'
                     };
                     // Now get it inside the XCConfigurationList
@@ -222,7 +194,7 @@ if(configIsOK(cfg)){
                         var fleRf = reused.sourceFiles[swiftFiles[i]].uuids.PBXFileReference;
                         var nm = reused.sourceFiles[swiftFiles[i]].name;
 
-                        proj.pbxBuildFileSection()[bldPhse + ' /* ' + nm + ' in Sources */'] = createBuildFileObj({
+                        proj.pbxBuildFileSection()[bldPhse + ' /* ' + nm + ' in Sources */'] = objCreator.createBuildFileObj({
                             fileRef: fleRf,
                             basename: nm
                         });
@@ -246,15 +218,15 @@ if(configIsOK(cfg)){
 
                     }
                     // Now it's time to add in our sources (the .swift files)
-                    proj.hash.project.objects[pbxSrcBldPhse][reused.uuids.sources] = createBuildPhaseObj(pbxSrcBldPhse, bldActnMsk, swiftSources);
+                    proj.hash.project.objects[pbxSrcBldPhse][reused.uuids.sources] = objCreator.createBuildPhaseObj(pbxSrcBldPhse, bldActnMsk, swiftSources);
                     proj.hash.project.objects[pbxSrcBldPhse][reused.uuids.sources + '_comment'] = 'Sources';
                     // For now - our frameworks and resources equivalents are empty.
                     // But - because they might not be later - we'll create points to add them in too so we can use them later if we want to.
                     // Frameworks first...
-                    proj.hash.project.objects[pbxFrmwksBldPhse][reused.uuids.frameworks] = createBuildPhaseObj(pbxFrmwksBldPhse, bldActnMsk, []);
+                    proj.hash.project.objects[pbxFrmwksBldPhse][reused.uuids.frameworks] = objCreator.createBuildPhaseObj(pbxFrmwksBldPhse, bldActnMsk, []);
                     proj.hash.project.objects[pbxFrmwksBldPhse][reused.uuids.frameworks + '_comment'] = 'Frameworks';
                     // ...then Resources.
-                    proj.hash.project.objects[pbxRsBldPhse][reused.uuids.resources] = createBuildPhaseObj(pbxRsBldPhse, bldActnMsk, []);
+                    proj.hash.project.objects[pbxRsBldPhse][reused.uuids.resources] = objCreator.createBuildPhaseObj(pbxRsBldPhse, bldActnMsk, []);
                     proj.hash.project.objects[pbxRsBldPhse][reused.uuids.resources + '_comment'] = 'Resources';
                     // Now it's time to create the XCTest reference
                     proj.pbxFileReferenceSection()[reused.XCTest.uuid + ' /* ' + reused.XCTest.name + ' */'] = {

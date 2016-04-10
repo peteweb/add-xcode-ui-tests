@@ -27,6 +27,6 @@
         "proxyquire": "1.7.4"
     },
     "scripts":{
-        "unit": "jasmine-node tests/unit/"
+        "unit": "jasmine-node tests/unit/ --verbose"
     }
 }
