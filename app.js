@@ -1,6 +1,7 @@
 var cp = require('child_process'),
     fs = require('fs'),
-    xcode = require('xcode');
+    xcode = require('xcode'),
+    xml2js = require('xml2js');
 var cfg = require('./config.json');
 var objCreator = require('./libs/objectCreator.js');
 
@@ -166,12 +167,12 @@ if(configIsOK(cfg)){
                     // Add it to the XCBuildConfiguration object (Debug then Release)
                     proj.pbxXCBuildConfigurationSection()[reused.uuids.debug + ' /* Debug */'] = {
                         isa: xcBldCfg,
-                        buildSettings: objCreator.createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
+                        buildSettings: objCreator.createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app, 'debug', cfg.xcodeproj.deploymentTargetSDK, cfg.xcodeproj.framework),
                         name: 'Debug'
                     };
                     proj.pbxXCBuildConfigurationSection()[reused.uuids.release + ' /* Release */'] = {
                         isa: xcBldCfg,
-                        buildSettings: objCreator.createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app),
+                        buildSettings: objCreator.createBuildSettingsObj(testsName, cfg.xcodeproj.appReverseDomain, app, 'release', cfg.xcodeproj.deploymentTargetSDK, cfg.xcodeproj.framework),
                         name: 'Release'
                     };
                     // Now get it inside the XCConfigurationList
@@ -184,7 +185,16 @@ if(configIsOK(cfg)){
                         defaultConfigurationIsVisible: '0'
                     };
                     // Things get tricky again - time for some more helpers
-                    var bldActnMsk = proj.hash.project.objects[pbxSrcBldPhse][proj.pbxTargetByName(app).buildPhases[0].value].buildActionMask;
+
+                    var bldActnMsk;
+                    if(proj.pbxTargetByName(app) === null){
+                        // a Titanium workaround :/
+                        bldActnMsk = proj.hash.project.objects[pbxSrcBldPhse][proj.pbxTargetByName('"' + app + '.app"').buildPhases[0].value].buildActionMask;
+                    } else {
+                        bldActnMsk = proj.hash.project.objects[pbxSrcBldPhse][proj.pbxTargetByName(app).buildPhases[0].value].buildActionMask;
+                    }
+
+                    // var bldActnMsk = proj.hash.project.objects[pbxSrcBldPhse][proj.pbxTargetByName(app).buildPhases[0].value].buildActionMask;
                     var swiftSources = [];
                     var pbxChildFiles = [];
 
@@ -265,9 +275,66 @@ if(configIsOK(cfg)){
                         sourceTree: '"<group>"'
                     };
                     proj.hash.project.objects[pbxGrp][reused.uuids.PBXGroup + '_comment'] = testsName;
-                    // We're done! So let's write all of this back to our working file.
+                    // We're done with the first major part! So let's write all of this back to our working file.
                     fs.writeFileSync(pbxprojPath, proj.writeSync());
-                    // And move it all into our final destination folder.
+                    // Now let's move onto the second and final major part.
+                    var parser = xml2js.parseString;
+                    var xcsPathNative = basewrkdir + '/' + app + '.xcodeproj/' + cfg.xcodeproj.extraXCschemesPath + 'xcschemes/' + cfg.xcodeproj.xcschemesName + '.xcscheme';
+                    var schemeXML;
+                    var validXMLFile = true;
+                    // Because this can be brittle...
+                    var recoveryMessage = "At this point - you can continue if you so wish, just open up XCode and it will fix the dependency issues for you. But if you want to run tests through the CLI - you need to fix this.";
+                    try {
+                        schemeXML = fs.readFileSync(xcsPathNative, 'utf8');
+                    } catch (e) {
+                        console.error(e);
+                        if(e.code === 'ENOENT'){
+                            console.log("Couldn't find the .xcscheme file at: " + xcsPathNative + " . If you go to that path manually, does it exist?");
+                            console.log(recoveryMessage);
+                            validXMLFile = false;
+                        }
+                    }
+                    if(validXMLFile){
+                        var builder = new xml2js.Builder();
+                        parser(schemeXML, function(err, res){
+                            if(err){
+                                console.error(err);
+                                console.log("We hit an error parsing the file at: " + xcsPathNative + " . If you open it in a text editor - is it well formed and valid XML?");
+                                console.log(recoveryMessage);
+                            } else {
+                                // I haven't found an instance where TestAction doesn't exist in XCode > 7.2
+                                var objToAdd = {
+                                    TestableReference: [{
+                                        '$': {
+                                            skipped: 'NO'
+                                        },
+                                        BuildableReference: {
+                                            '$': {
+                                                BuildableIdentifier: 'primary',
+                                                BlueprintIdentifier: reused.uuids.core,
+                                                BuildableName: reused.XCTest.name,
+                                                BlueprintName: testsName,
+                                                ReferencedContainer: 'container:' + app + '.xcodeproj'
+                                            }
+                                        }
+                                    }]
+                                };
+                                // Add to any existing Testables, such as unit tests
+                                res.Scheme.TestAction[0].Testables.push(objToAdd);
+                                // And just in case it's parsed badly
+                                if(res.Scheme.TestAction[0].Testables[0] === '\n      '){
+                                    res.Scheme.TestAction[0].Testables.splice(0,1);
+                                }
+
+                                var testableXML = builder.buildObject(res);
+
+                                fs.writeFileSync(xcsPathNative, testableXML);
+
+                                // NOW we're done.
+                            }
+                        });
+                    }
+                    // And finally, we move it all into our final destination folder.
                     op1 = "rm -rf " + cfg.directories.destination + ";";
                     op2 = "cp -a " + cfg.directories.working + "/* " + cfg.directories.destination + ";";
                     op3 = "rm -rf " + cfg.directories.working + ";";

@@ -25,6 +25,15 @@ Well - now we can.
 * Open up the finished XCode project inside your chosen destination directory
 * Test all the things
 
+### Updates ###
+
+#### 0.3.0 ####
+
+* Added in extra build config, so tests can be executed via the CLI with xcodebuild
+* Added in transformation of deep internal xcscheme file, also for CLI execution with xcodebuild
+* Added in sample config for `native`, `nativescript` and `titanium` projects
+* Added in hacks for `titanium` built projects
+
 ### Contributors ###
 
 * [Pete Lancaster](http://petedoeswebthings.com/)

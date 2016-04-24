@@ -1,14 +1,62 @@
 {
     "xcodeproj":{
         "appName":"MyTestApplication",
+        "xcschemesName": "MyTestApplication",
+        "extraXCschemesPath": "xcuserdata/pete.xcuserdatad/",
         "uiTestsName":"MyTestApplicationUITests",
         "appReverseDomain":"com.testdomain",
-        "version":"7.2.1"
+        "version":"7.2.1",
+        "deploymentTargetSDK": "9.0",
+        "framework": "titanium"
     },
     "directories":{
         "base":"base",
         "exitingTests":"basetests",
         "working":"baseworkingdir",
         "destination":"finished"
+    },
+    "examples":{
+        "nativescript":{
+            "xcodeproj":{
+                "appName":"MyTestApplication",
+                "xcschemesName": "MyTestApplication",
+                "extraXCschemesPath": "xcshareddata/",
+                "uiTestsName":"MyTestApplicationUITests",
+                "appReverseDomain":"com.testdomain",
+                "version":"7.2.1",
+                "deploymentTargetSDK": "9.0",
+                "framework": "nativescript"
+            }
+        },
+        "titanium":{
+            "xcodeproj":{
+                "appName":"MyTestApplication",
+                "xcschemesName": "MyTestApplication",
+                "extraXCschemesPath": "xcshareddata/",
+                "uiTestsName":"MyTestApplicationUITests",
+                "appReverseDomain":"com.testdomain",
+                "version":"7.2.1",
+                "deploymentTargetSDK": "9.0",
+                "framework": "titanium"
+            }
+        },
+        "native":{
+            "xcodeproj":{
+                "appName":"MyTestApplication",
+                "xcschemesName": "MyTestApplication",
+                "extraXCschemesPath": "xcuserdata/USER.xcuserdatad/",
+                "uiTestsName":"MyTestApplicationUITests",
+                "appReverseDomain":"com.testdomain",
+                "version":"7.2.1",
+                "deploymentTargetSDK": "9.0",
+                "framework": "apple"
+            }
+        },
+        "directories":{
+            "base":"base",
+            "exitingTests":"basetests",
+            "working":"baseworkingdir",
+            "destination":"finished"
+        }
     }
 }
