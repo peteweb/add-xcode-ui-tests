@@ -12,12 +12,15 @@ Well - now we can.
 
 ### What is this repository for? ###
 
-* Adding in .swift iOS tests to dynamically created XCode projects
+* Making it easier to add .swift iOS tests to dynamically created XCode projects
 * Promoting the awesome benefits of UI Testing
 * Making developers and testers lives easier
 
 ### How do I get set up? ###
 
+#### Proof Of Concept ####
+
+* Open up the `01_proof_of_concept` directory
 * Write some .swift UI Tests for your existing project ([here's a bit of an intro](https://developer.apple.com/videos/play/wwdc2015/406/))
 * Extract these tests out into a separate file folder / location (see the basetests folder for an example)
 * Change the values of the config.json file to directories that are readable/writable (all of which are required and must be absolute or relative to the location you execute the next command)
@@ -25,9 +28,17 @@ Well - now we can.
 * Open up the finished XCode project inside your chosen destination directory
 * Test all the things
 
+#### Titanium CLI Plugin ####
+
+* [Coming soon - more info available from https://peteweb.wordpress.com](https://peteweb.wordpress.com/category/automation/)
+
 ### Updates ###
 
-#### 0.3.0 ####
+#### GLOBAL: 2016-05-10 ####
+
+* Moving things around a little so there can be one repo to rule them all
+
+#### POC : 0.3.0 ####
 
 * Added in extra build config, so tests can be executed via the CLI with xcodebuild
 * Added in transformation of deep internal xcscheme file, also for CLI execution with xcodebuild
@@ -47,6 +58,6 @@ Well - now we can.
 
 ### EPIC DISCLAIMER ###
 
-This is very much a work in progress, and essentially - a proof of concept. If you use this, and it mares your project up - that's your bad - and you should be backing up your files more. Use with caution, and put your head between your legs if required.
+This is very much a work in progress, and essentially still just a proof of concept. If you use this, and it mares your project up - that's your bad - and you should be backing up your files more. Use with caution, and put your head between your legs if required.
 
 Tested only with XCode 7.2.1 - believed to work with 7.3.*.
