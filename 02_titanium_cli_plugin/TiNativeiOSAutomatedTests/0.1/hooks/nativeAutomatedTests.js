@@ -17,10 +17,16 @@ exports.isValidPlatform = function(platform){
         return false;
     }
 };
+exports.tieTestsIntoTheXCodeBuild = function(logFunc, doneFunc, cfgObj, testsPathToUse){
+    logFunc('And now we tie everything together.');
+};
 
 exports.init = function(logger, config, cli, appc){
 
     function logMe(message, type){
+        if(type === undefined){
+            type = 'info';
+        }
         logger[type]("TiNativeiOSAutomatedTests: " + message);
     }
 
@@ -57,7 +63,7 @@ exports.init = function(logger, config, cli, appc){
     }
 
     cli.addHook('build.pre.compile', function(build, finished){
-        
+
     });
 
     cli.addHook('build.ios.xcodebuild', function(build, finished){
